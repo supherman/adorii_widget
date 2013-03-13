@@ -1,4 +1,9 @@
-%img{:src => "http://a248.e.akamai.net/origin-cdn.volusion.com/uxxqy.odzcv/v/vspfiles/photos/{{ProductCode}}-0.jpg"}
-%dl
-  %dt Price:
-  %dd {{ProductPrice}}
+%a{:href => "http://www.badgeint.com/product-p/{{ProductCode}}.htm"}
+  %img{:src => "http://a248.e.akamai.net/origin-cdn.volusion.com/uxxqy.odzcv/v/vspfiles/photos/{{ProductCode}}-0.jpg"}
+  .prod-name
+    {{ProductName}}
+  .prod-price
+    %b Price:
+    {{ProductPrice}}
+  .finish-date{:hidden => "hidden" }
+    {{DisplayEndDate}}
