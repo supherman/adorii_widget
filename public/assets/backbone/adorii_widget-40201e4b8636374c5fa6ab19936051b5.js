@@ -432,17 +432,21 @@ Handlebars.template = Handlebars.VM.template;
   };
 
   $.fn.adoriiWidget = function(options) {
-    var products, url,
+    var defaults, products,
       _this = this;
-    url = options.url;
+    defaults = {
+      limit: 10
+    };
+    _.extend(options, defaults);
     products = new AdoriiWidget.Collections.Products();
-    products.url = url;
+    products.url = options.url;
     products.fetch();
     return products.on('reset', function() {
       return _this.each(function() {
         var view;
         view = new AdoriiWidget.Views.Products({
-          collection: products
+          collection: products,
+          limit: options.limit
         });
         return $(this).html(view.render().el);
       });
@@ -458,15 +462,27 @@ helpers = helpers || Handlebars.helpers; data = data || {};
   var buffer = "", stack1, functionType="function", escapeExpression=this.escapeExpression;
 
 
-  buffer += "<img src='http://a248.e.akamai.net/origin-cdn.volusion.com/uxxqy.odzcv/v/vspfiles/photos/";
+  buffer += "<a href='http://www.badgeint.com/product-p/";
   if (stack1 = helpers.ProductCode) { stack1 = stack1.call(depth0, {hash:{},data:data}); }
   else { stack1 = depth0.ProductCode; stack1 = typeof stack1 === functionType ? stack1.apply(depth0) : stack1; }
   buffer += escapeExpression(stack1)
-    + "-0.jpg'>\n<dl>\n  <dt>Price:</dt>\n  <dd>";
+    + ".htm'>\n  <img onerror='this.src=\"/v/vspfiles/templates/adorii/images/nophoto.gif\"' src='http://a248.e.akamai.net/origin-cdn.volusion.com/uxxqy.odzcv/v/vspfiles/photos/";
+  if (stack1 = helpers.ProductCode) { stack1 = stack1.call(depth0, {hash:{},data:data}); }
+  else { stack1 = depth0.ProductCode; stack1 = typeof stack1 === functionType ? stack1.apply(depth0) : stack1; }
+  buffer += escapeExpression(stack1)
+    + "-1.jpg'>\n  <div class='prod-name'>\n    ";
+  if (stack1 = helpers.ProductName) { stack1 = stack1.call(depth0, {hash:{},data:data}); }
+  else { stack1 = depth0.ProductName; stack1 = typeof stack1 === functionType ? stack1.apply(depth0) : stack1; }
+  buffer += escapeExpression(stack1)
+    + "\n  </div>\n  <div class='prod-price'>\n    <b>Price:</b>\n    ";
   if (stack1 = helpers.ProductPrice) { stack1 = stack1.call(depth0, {hash:{},data:data}); }
   else { stack1 = depth0.ProductPrice; stack1 = typeof stack1 === functionType ? stack1.apply(depth0) : stack1; }
   buffer += escapeExpression(stack1)
-    + "</dd>\n</dl>\n";
+    + "\n  </div>\n  <div class='finish-date' hidden='hidden'>\n    This sale ends ";
+  if (stack1 = helpers.DisplayEndDate) { stack1 = stack1.call(depth0, {hash:{},data:data}); }
+  else { stack1 = depth0.DisplayEndDate; stack1 = typeof stack1 === functionType ? stack1.apply(depth0) : stack1; }
+  buffer += escapeExpression(stack1)
+    + "\n  </div>\n</a>\n";
   return buffer;
   });
   return this.HandlebarsTemplates["backbone/templates/product"];
@@ -533,7 +549,13 @@ helpers = helpers || Handlebars.helpers; data = data || {};
     Product.prototype.template = HandlebarsTemplates['backbone/templates/product'];
 
     Product.prototype.render = function() {
-      this.$el.html(this.template(this.model.toJSON()));
+      var json, time;
+      json = this.model.toJSON();
+      time = moment(json.DisplayEndDate, "MMDDYYYY").fromNow();
+      _.extend(json, {
+        DisplayEndDate: time
+      });
+      this.$el.html(this.template(json));
       return this;
     };
 
@@ -567,7 +589,7 @@ helpers = helpers || Handlebars.helpers; data = data || {};
     };
 
     Products.prototype.addAll = function() {
-      return this.collection.each(this.addOne, this);
+      return this.collection.chain().slice(0, this.options.limit).each(this.addOne, this);
     };
 
     Products.prototype.addOne = function(product) {

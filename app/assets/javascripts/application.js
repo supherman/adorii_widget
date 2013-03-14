@@ -14,5 +14,6 @@
 //= require jquery_ujs
 //= require underscore
 //= require backbone
+//= require moment
 //= require backbone/adorii_widget
 //= require_tree .

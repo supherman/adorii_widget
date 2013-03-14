@@ -14,13 +14,16 @@ window.AdoriiWidget =
   Views: {}
 
 $.fn.adoriiWidget = (options)->
-  url = options.url
+  defaults =
+    limit: 10
+
+  _.extend(options, defaults)
 
   products = new AdoriiWidget.Collections.Products()
-  products.url = url
+  products.url = options.url
   products.fetch()
   products.on 'reset', =>
 
     @each ->
-      view = new AdoriiWidget.Views.Products({ collection: products })
+      view = new AdoriiWidget.Views.Products({ collection: products, limit: options.limit })
       $(@).html(view.render().el)

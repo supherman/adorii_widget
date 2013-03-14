@@ -11,7 +11,7 @@ class AdoriiWidget.Views.Products extends Backbone.View
     @
 
   addAll: ->
-    @collection.each @addOne, @
+    @collection.chain().slice(0, @options.limit).each @addOne, @
 
   addOne: (product)->
     view = new AdoriiWidget.Views.Product({ model: product })
