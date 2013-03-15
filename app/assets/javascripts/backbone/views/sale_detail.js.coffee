@@ -5,8 +5,11 @@ class AdoriiWidget.Views.SaleDetail extends Backbone.View
 
   template: HandlebarsTemplates['backbone/templates/sale_detail']
 
+  initialize: ->
+    @collection = new AdoriiWidget.Collections.Products(@model.get('products'))
+
   render: ->
-    @$el.html(@template())
+    @$el.html @template(@model.toJSON())
     @addAll()
     @
 

@@ -6,5 +6,8 @@ class AdoriiWidget.Views.SaleProduct extends Backbone.View
   template: HandlebarsTemplates['backbone/templates/sale_product']
 
   render: ->
-    @$el.html(@template(@model.toJSON()))
+    json = @model.toJSON()
+    time = moment(json.DisplayEndDate, "MMDDYYYY").fromNow()
+    _.extend json, { DisplayEndDate: time }
+    @$el.html(@template(json))
     @

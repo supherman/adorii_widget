@@ -12,6 +12,7 @@ window.AdoriiWidget =
   Collections: {}
   Routers: {}
   Views: {}
+  Instances: {}
 
 $.fn.adoriiProductsWidget = (options)->
   defaults =
@@ -35,16 +36,20 @@ $.fn.adoriiSalesWidget = (options)->
 
   _.defaults(options, defaults)
 
-  sales = new AdoriiWidget.Collections.Sales()
-  sales.url = options.url
-  sales.fetch()
-  sales.on 'reset', =>
+  AdoriiWidget.Instances[options.namespace] = new AdoriiWidget.Collections.Sales()
+  AdoriiWidget.Instances[options.namespace].url = options.url
+  AdoriiWidget.Instances[options.namespace].fetch()
+  AdoriiWidget.Instances[options.namespace].on 'reset', =>
 
     @each ->
-      view = new AdoriiWidget.Views.Sales({ collection: sales, limit: options.limit, namespace: options.namespace })
+      view = new AdoriiWidget.Views.Sales
+        collection: AdoriiWidget.Instances[options.namespace]
+        limit: options.limit
+        namespace: options.namespace
       $(@).html(view.render().el)
 
-  window.router = new AdoriiWidget.Routers.Sales({ namespace: options.namespace })
-  Backbone.history.stop()
-  Backbone.history.start()
+    new AdoriiWidget.Routers.Sales({ namespace: options.namespace, el: $(@) })
+
+    Backbone.history.stop()
+    Backbone.history.start()
   @

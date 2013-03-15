@@ -5,6 +5,9 @@ class AdoriiWidget.Views.Sale extends Backbone.View
 
   template: HandlebarsTemplates['backbone/templates/sale']
 
+  initialize: ->
+    @$el.addClass "#{@options.namespace}-#{@model.get('CategoryID')}"
+
   render: ->
     json = @model.toJSON()
     _.extend json, { namespace: @options.namespace }
