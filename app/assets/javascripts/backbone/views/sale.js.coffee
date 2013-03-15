@@ -10,6 +10,7 @@ class AdoriiWidget.Views.Sale extends Backbone.View
 
   render: ->
     json = @model.toJSON()
-    _.extend json, { namespace: @options.namespace }
+    time = moment(json.DisplayEndDate, "MMDDYYYY").fromNow()
+    _.extend json, { namespace: @options.namespace, DisplayEndDate: time }
     @$el.html @template(json)
     @
