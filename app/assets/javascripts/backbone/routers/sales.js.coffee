@@ -1,4 +1,7 @@
 class AdoriiWidget.Routers.Sales extends Backbone.Router
+  routes:
+    '': 'index'
+
   initialize: (options)->
     @namespace  = options.namespace
     @el         = options.el
@@ -7,12 +10,14 @@ class AdoriiWidget.Routers.Sales extends Backbone.Router
     @route "#{@namespace}/:id", 'show'
 
   show: (id)->
-    @index()
-    el    = @el.find(".#{@namespace}-#{id} .sale-detail")
+    @el.find('ul').hide()
+    detail = @el.find('.sale-detail')
     model = @collection.get id
     view  = new AdoriiWidget.Views.SaleDetail({ model: model })
-    el.html(view.render().el)
-    el.show()
+    detail.html(view.render().el)
+    detail.show()
 
   index: ->
     @el.find('.sale-detail').hide()
+    @el.find('ul').show()
+
